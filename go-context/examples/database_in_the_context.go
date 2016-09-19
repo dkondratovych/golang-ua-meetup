@@ -29,9 +29,9 @@ var DB database.IDatabase
 func setDatabaseMiddleware(h http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		dctx := database.NewContext(r.Context(), DB)
+		dctx := database.NewContext(r.Context(), DB) // HL
 
-		r = r.WithContext(dctx)
+		r = r.WithContext(dctx) // HL
 
 		h(w, r)
 	}

@@ -70,7 +70,7 @@ func (d *database) MustBeginTransaction() IDatabase {
 
 // START2 OMIT
 func (d *database) Commit() error {
-	if tx, ok := d.db.(*sql.Tx); ok {
+	if tx, ok := d.db.(*sql.Tx); ok { // HL
 		return tx.Commit()
 	} else {
 		return ErrInvalidTransaction
@@ -82,7 +82,7 @@ func (d *database) Commit() error {
 // STOP2 OMIT
 
 func (d *database) Rollback() error {
-	if tx, ok := d.db.(*sql.Tx); ok {
+	if tx, ok := d.db.(*sql.Tx); ok { // HL
 		return tx.Rollback()
 	} else {
 		return ErrInvalidTransaction

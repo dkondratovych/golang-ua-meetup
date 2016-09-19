@@ -16,7 +16,7 @@ const (
 type IRequestScopedLogger interface {
 	ILogger
 
-	GetRequestScoped(requestID, appName string, userID int64) ILogger
+	GetRequestScoped(requestID, appName string, userID int64) ILogger // HL
 }
 
 type ILogger interface {
@@ -26,9 +26,9 @@ type ILogger interface {
 
 type logger struct {
 	*logrus.Logger
-	requestID string
-	appName   string
-	userID    int64
+	requestID string // HL
+	appName   string // HL
+	userID    int64  // HL
 }
 
 // STOP1 OMIT

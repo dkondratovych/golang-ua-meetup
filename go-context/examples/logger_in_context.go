@@ -30,14 +30,14 @@ func setLoggerMiddleware(h http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		// next values in real app will be retrieved from db, cache, http headers etc
-		requestScopedLogger := globalLogger.GetRequestScoped(
-			fmt.Sprintf("%x", f.NextId()), // request id
-			"web",    // application name
-			int64(0), // current user id
-		)
+		requestScopedLogger := globalLogger.GetRequestScoped( // HL
+			fmt.Sprintf("%x", f.NextId()), // request id		// HL
+			"web",    // application name						// HL
+			int64(0), // current user id						// HL
+		) // HL
 
-		lctx := logger.NewContext(r.Context(), requestScopedLogger)
-		r = r.WithContext(lctx)
+		lctx := logger.NewContext(r.Context(), requestScopedLogger) // HL
+		r = r.WithContext(lctx)                                     // HL
 
 		h(w, r)
 	}
@@ -47,7 +47,7 @@ func setLoggerMiddleware(h http.HandlerFunc) http.HandlerFunc {
 
 // START2 OMIT
 func handleAndLog(w http.ResponseWriter, r *http.Request) {
-	l := logger.MustFromContext(r.Context())
+	l := logger.MustFromContext(r.Context()) // HL
 
 	l.Printf("Bazinga!")
 
