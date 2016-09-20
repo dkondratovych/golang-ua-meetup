@@ -9,11 +9,11 @@ dmytro.kondratovych@gmail.com
 
 * Some history
 
-The idea to created Context was posted by [[https://groups.google.com/forum/#!msg/golang-nuts/teSBtPvv1GQ/U12qA9N51uIJ][Brad Fitzpatrick]] to the go-nuts mailing list back in 2011.
+The idea to create Context was posted by [[https://groups.google.com/forum/#!msg/golang-nuts/teSBtPvv1GQ/U12qA9N51uIJ][Brad Fitzpatrick]] to the go-nuts mailing list back in 2011.
 
 Later package Context was developed in Google to make it easy to pass request specific values, cancelation, timeout and deadline signals to all goroutines involved in handling a request. Package started it's life under *golang.org/x/net/context*
 
-After become more popular and proven to be essential to many Go applications, package was moved [[https://github.com/golang/go/issues/14660][(GitHub issue)]] to standart library and named *context* since context by itself has little to do with networking by itself. 
+After becoming more popular and proving to be essential to many Go applications, package was moved [[https://github.com/golang/go/issues/14660][(GitHub issue)]] to standard library and named *context* since context by itself has little to do with networking by itself. 
 
 In Go 1.7 support for contexts has been added to the [[https://golang.org/pkg/net/][net]], [[https://golang.org/pkg/net/http/][net/http]], and [[https://golang.org/pkg/os/exec/][os/exec]] packages.
 
@@ -55,13 +55,13 @@ In Go 1.7 support for contexts has been added to the [[https://golang.org/pkg/ne
 * How to create context ? (1/1)
 
 
-Before Go 1.7 to create and pass context throw middleware chain and access it in handler, you had to choose between three possible options
+Before Go 1.7, to create and pass context through middleware chain and access it in handler, you had to choose between three possible options
 - use a global request-to-context mapping
 - create a http.ResponseWriter wrapper struct
 - create your own handler types
 
 
-In Go 1.7 it become more easily and clear to create context. Context become a part of *http.Request*. 
+In Go 1.7 it became more easily and clear to create context. Context has become a part of *http.Request*. 
 
 * How to create context ? (1/2)
 
@@ -78,7 +78,7 @@ In Go 1.7 it become more easily and clear to create context. Context become a pa
 
 WithValue returns a copy of parent in which the value associated with key is val.
 
-Use context Values only for request-scoped data that transits processes and APIs, not for passing optional parameters to functions or like dependecy injection container.
+Use context Values only for request-scoped data that transits processes and APIs, not for passing optional parameters to functions or dependecy injection container.
 
 * context.WithValue (1/2)
 
@@ -124,7 +124,7 @@ An example how to read from context
 - authorization tokens
 - request-scoped values
 
-Basically all data durint request lifetime can be treated as request-scoped - that's the main problem. It adds uncertanty what is appropriate to put into context and what is not.
+Basically all data during request lifetime can be treated as request-scoped - that's the main problem. It adds uncertainty to what is appropriate to put into context and what is not.
 
 In addition context may be used to store specific values: 
 - request id
@@ -137,19 +137,19 @@ In addition context may be used to store specific values:
 .image images/context_in_google.png 550 _
 
 
-* What you should remember before set anything into context ?
+* What you should remember before seting anything into context ?
 
 - It’s completely type-unsafe, you get interface{} from the context.
 - Cannot be checked by the compiler. 
-- Doesn't make dependecies explicit. User have to read the implementation, what is not good.
+- Doesn't make dependencies explicit. User has to read the implementation, which is not good.
 - Context.Value obscures your program’s flow
 
 
 * Do not "over context" 
 
-Try to keep dependecies explicit. Make functions easty to read, test and checkable by the compiler.
+Try to keep dependencies explicit. Make functions easy to read, test and check by the compiler.
 
-	// Function dependecy is not clear, avoid using context like this
+	// Function dependency is not clear, avoid using context like this
 	func calculatePaysleep(ctx context.Contex) int64 {
 		user := user.UserMustFromContext(ctx)
 		rate := rate.RateMustFromContext(ctx)
@@ -161,11 +161,11 @@ Try to keep dependecies explicit. Make functions easty to read, test and checkab
 
 * What Go community members recommend to set into context ? (1/1)
 
-[[http://peter.bourgon.org/blog/2016/07/11/context.html][Peter Bourgon]] recommends use context to store values, like strings and data structs and avoid using it to store references, like pointers and handlers. Also store only request-scoped logger, if needed.
+[[http://peter.bourgon.org/blog/2016/07/11/context.html][Peter Bourgon]] recommends using context to store values, like strings and data structs and avoid using it to store references, like pointers and handlers. Also store only request-scoped logger, if needed.
 
 * What Go community members recommend to set into context ? (1/2)
 
-[[https://medium.com/@cep21/how-to-correctly-use-context-context-in-go-1-7-8f2c0fafdf39#.85mq6xwv6][Jack Lindamood]] recomends to store request scooped data related to who is making the request (user ID), how they are making it (internal or external), from where they are making it (user IP) and how important this request should be.
+[[https://medium.com/@cep21/how-to-correctly-use-context-context-in-go-1-7-8f2c0fafdf39#.85mq6xwv6][Jack Lindamood]] recomends to store request scooped data related to who is making the request (user ID), how are they are making it (internal or external), from where are they making it from (user IP) and how important this request should be.
 
 A database connection may be considered request-scooped if it contains some metadata about current user.
 
@@ -175,7 +175,7 @@ Context.Value should inform, not control application flow. For example if your f
 
 * So what should I do?
 
-There is no bulletproof rules what to store in the context! Try, analyse and then make your own dicisigins what is good or bad for your particular project.
+There is no bulletproof rules for what to store in the context! Try, analyze and then make your own decisions about what is good or bad for your particular project.
 
 
 * Logger in the context (1/1)
@@ -191,7 +191,7 @@ Base logger can be created with default/known values.
 
 .code examples/logger/logger.go /START1A/,/STOP1A/ 
 
-And request scoped logger interface implementation will look like.
+And request scoped logger interface implementation will look like:
 .code examples/logger/logger.go /START2/,/STOP2/ 
 
 * Logger in the context (1/3)
@@ -202,15 +202,15 @@ You have to init request scoped logger in the middleware
 
 * Logger in the context (1/4)
 
-An example how to access logger from the context
+An example of how to access logger from the context
 
 .code examples/logger_in_context.go /START2/,/STOP2/ 
 
 
 * Database in the context (1/1)
-Store database connection pool in the context is contraversial decigion. For sure database by itself is not request scoped, but database transactions is kind of related for request lifetime data. 
+Storing database connection pool in the context is controversial decision. For sure database itself is not request scoped, but database transactions are kind of related to request lifetime data.
 
-As an example lets see how it looks to store database in the context and how this approach may simplify sharing database tranasction across functions.
+As an example lets see how it looks like to store database in the context and how this approach may simplify sharing database tranasction across functions.
 
 
 * Database in the context (1/2)
@@ -239,7 +239,7 @@ You have to set DB into context in the middleware.
 
 * Blocking and long running operations (1/1)
 
-You should always have ability to cancel long running and blocking operations because function may work longer that we actually need.
+You should always have ability to cancel long running and blocking operations because function may work longer than we actually need.
 
 * Why should I care about blocking / long running operations ? (1/2)
 
