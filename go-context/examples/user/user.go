@@ -18,17 +18,17 @@ func NewUserContext(ctx context.Context, user *User) context.Context {
 
 // FromContext retrieves user from context OMIT
 func UserFromContext(ctx context.Context) (*User, bool) {
-	u, ok := ctx.Value(userContextKey).(*User)
+	u, ok := ctx.Value(userContextKey).(*User) // HL
 	return u, ok
 }
 
 // UserMustFromContext retrieves user from context and panics if not found OMIT
 func UserMustFromContext(ctx context.Context) *User {
-	sp, ok := ctx.Value(userContextKey).(*User)
-	if !ok {
-		panic("user not found in context")
-	}
-	return sp
+	u, ok := ctx.Value(userContextKey).(*User) // HL
+	if !ok {                                   // HL
+		panic("user not found in context") // HL
+	} // HL
+	return u
 }
 
 // STOP OMIT

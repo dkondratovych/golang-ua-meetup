@@ -18,9 +18,6 @@ func main() {
 		}
 
 		conn, err := ln.Accept()
-		if err != nil {
-			log.Print(err.Error())
-		}
 
 		for {
 			message, err := bufio.NewReader(conn).ReadString('\n')
@@ -29,6 +26,11 @@ func main() {
 			}
 
 			log.Printf("Message: %s", message)
+
+			_, err := conn.Write([]byte("Bazinga!"))
+			if err != nil {
+
+			}
 			return
 		}
 	}()
@@ -46,6 +48,13 @@ func main() {
 		for {
 			fmt.Fprintf(conn, "Hi there \n")
 		}
+
+		//dialer := &net.Dialer{}
+		//conn, err := dialer.Dial("tcp", "127.0.0.1:8081")
+		//if err != nil {
+		//	log.Print(err.Error())
+		//}
+
 	}()
 
 	time.Sleep(2 * time.Second)

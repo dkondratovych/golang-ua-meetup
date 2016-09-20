@@ -161,13 +161,14 @@ Try to keep dependecies explicit. Make functions easty to read, test and checkab
 
 * What Go community members recommend to set into context ? (1/1)
 
-[[http://peter.bourgon.org/blog/2016/07/11/context.html][Peter Bourgon]] recommends use context to store values, like strings and data structs and avoid using it to store references, like pointers and handlers. Also store logger onlt request-scoped logger, if needed.
+[[http://peter.bourgon.org/blog/2016/07/11/context.html][Peter Bourgon]] recommends use context to store values, like strings and data structs and avoid using it to store references, like pointers and handlers. Also store only request-scoped logger, if needed.
 
 * What Go community members recommend to set into context ? (1/2)
 
 [[https://medium.com/@cep21/how-to-correctly-use-context-context-in-go-1-7-8f2c0fafdf39#.85mq6xwv6][Jack Lindamood]] recomends to store request scooped data related to who is making the request (user ID), how they are making it (internal or external), from where they are making it (user IP) and how important this request should be.
 
 A database connection may be considered request-scooped if it contains some metadata about current user.
+
 A logger may be considered request-scooped if it contains metadata about who sent the request.
 
 Context.Value should inform, not control application flow. For example if your function can’t behave correctly because of a value that may or may not be inside context.Value, then your API is obscuring required inputs too heavily. 

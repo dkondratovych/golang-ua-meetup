@@ -43,8 +43,8 @@ func setDatabaseMiddleware(h http.HandlerFunc) http.HandlerFunc {
 func handleAndQuery(w http.ResponseWriter, r *http.Request) {
 	// You can retrieve db from context
 	// if you need to perform single db request
-	db := database.MustFromContext(r.Context())
-	_ = db // OMIT
+	db := database.MustFromContext(r.Context()) // HL
+	_ = db                                      // OMIT
 
 	// You can create new ctx with tx inside and pass it into functions
 	txctx, tx := database.NewTransactionContext(r.Context()) // HL
