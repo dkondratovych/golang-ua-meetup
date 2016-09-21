@@ -61,7 +61,7 @@ Before Go 1.7, to create and pass context through middleware chain and access it
 - create your own handler types
 
 
-In Go 1.7 it became more easily and clear to create context. Context has become a part of *http.Request*. 
+In Go 1.7 it became more easy and clear to create context. Context has become a part of *http.Request*.
 
 * How to create context ? (1/2)
 
