@@ -24,7 +24,7 @@ func main() {
 }
 
 // START1 OMIT
-var DB database.IDatabase
+var DB database.Database
 
 func setDatabaseMiddleware(h http.HandlerFunc) http.HandlerFunc {
 

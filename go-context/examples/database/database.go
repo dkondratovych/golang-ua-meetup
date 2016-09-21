@@ -16,12 +16,12 @@ type database struct {
 	db *sql.DB
 }
 
-type IDatabase interface {
+type Database interface {
 	Commit() error
 	Rollback() error
 	Sql() *sql.DB
 
-	MustBeginTransaction() IDatabase // HL
+	MustBeginTransaction() Database // HL
 }
 
 // STOP1 OMIT
@@ -33,7 +33,7 @@ type Config struct {
 	Name     string
 }
 
-func NewDatabase(c Config) IDatabase {
+func NewDatabase(c Config) Database {
 	var err error
 
 	database := new(database)
@@ -56,7 +56,7 @@ func (d *database) Sql() *sql.DB {
 
 // MustGetTransaction returns new database object with opened transaction.
 // Panics if transaction cannot be opened
-func (d *database) MustBeginTransaction() IDatabase {
+func (d *database) MustBeginTransaction() Database {
 	tx, err := d.db.Begin()
 
 	if err != nil {

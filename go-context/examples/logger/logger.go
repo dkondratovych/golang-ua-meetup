@@ -14,12 +14,12 @@ const (
 
 // START1 OMIT
 type IRequestScopedLogger interface {
-	ILogger
+	Logger
 
-	GetRequestScoped(requestID, appName string, userID int64) ILogger // HL
+	GetRequestScoped(requestID, appName string, userID int64) Logger // HL
 }
 
-type ILogger interface {
+type Logger interface {
 	Printf(format string, args ...interface{})
 	Errorf(format string, args ...interface{})
 }
@@ -53,7 +53,7 @@ func (l *logger) Errorf(format string, args ...interface{}) {
 	}).Errorf(format, args...)
 }
 
-func (l *logger) GetRequestScoped(requestID, appName string, userID int64) ILogger {
+func (l *logger) GetRequestScoped(requestID, appName string, userID int64) Logger {
 	return &logger{l.Logger, requestID, appName, userID}
 }
 
