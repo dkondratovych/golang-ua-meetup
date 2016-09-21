@@ -24,7 +24,7 @@ func handlerSearchTimeout(w http.ResponseWriter, r *http.Request) {
 	var ctx context.Context
 	var cancel context.CancelFunc
 
-	ctx, cancel = context.WithTimeout(r.Context(), time.Duration(2*time.Second)) // HL
+	ctx, cancel = context.WithTimeout(r.Context(), 2*time.Second) // HL
 	defer cancel()
 
 	request, err := http.NewRequest(http.MethodGet, "http://localhost:8181/timeout", nil)
