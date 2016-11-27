@@ -10,13 +10,17 @@ import (
 )
 
 func main() {
-
-	DB = database.NewDatabase(database.Config{
+	var err error
+	DB, err = database.NewDatabase(database.Config{
 		IP:       "",
 		User:     "",
 		Password: "",
 		Name:     "",
 	})
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	http.HandleFunc("/test", setDatabaseMiddleware(handleAndQuery))
 

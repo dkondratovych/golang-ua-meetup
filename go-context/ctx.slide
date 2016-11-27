@@ -214,26 +214,31 @@ As an example lets see how it looks like to store database in the context and ho
 
 
 * Database in the context (1/2)
+To distinguish Tx from Db we need to create separate interfaces for assertions.
+
+.code examples/database/database.go /START 1A/,/STOP 1A/
+
+* Database in the context (1/3)
 
 MustBeginTransaction starts transaction and creates new database instance
 
 .code examples/database/database.go /START1/,/STOP1/ 
 
-* Database in the context (1/3)
+* Database in the context (1/4)
 
 To make Commit and Rollback working with *sql.DB we need to do some type assertion
 
 .code examples/database/database.go /START2/,/STOP2/ 
 
-* Database in the context (1/4)
+* Database in the context (1/5)
 You have to set DB into context in the middleware.
 
 .code examples/database_in_the_context.go /START1/,/STOP1/ 
 
-* Database in the context (1/5)
+* Database in the context (1/6)
 .code examples/database/context.go /START1/,/STOP1/ 
 
-* Database in the context (1/6)
+* Database in the context (1/7)
 .code examples/database_in_the_context.go /START2/,/STOP2/ 
 
 

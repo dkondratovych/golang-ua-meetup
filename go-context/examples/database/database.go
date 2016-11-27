@@ -4,22 +4,50 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
+	// ErrInvalidTransaction invalid transaction when you are trying to `Commit` or `Rollback`
 	ErrInvalidTransaction = errors.New("no valid transaction")
+
+	// ErrCantStartTransaction can't start transaction when you are trying to start one with `Begin`
+	ErrCantStartTransaction = errors.New("can't start transaction")
 )
+
+// START 1A OMIT
+type sqlCommon interface {
+	Exec(query string, args ...interface{}) (sql.Result, error)
+	Prepare(query string) (*sql.Stmt, error)
+	Query(query string, args ...interface{}) (*sql.Rows, error)
+	QueryRow(query string, args ...interface{}) *sql.Row
+}
+
+type sqlDb interface {
+	Begin() (*sql.Tx, error)
+	MustBegin() *sql.Tx
+}
+
+type sqlTx interface {
+	sqlCommon
+	Commit() error
+	Rollback() error
+}
+
+// STOP 1A OMIT
 
 // START1 OMIT
 type database struct {
-	db *sql.DB
+	db sqlCommon
 }
 
 type Database interface {
+	Sql() *sql.DB
+
 	Commit() error
 	Rollback() error
-	Sql() *sql.DB
+	PingDB() error
 
 	MustBeginTransaction() Database // HL
 }
@@ -33,34 +61,34 @@ type Config struct {
 	Name     string
 }
 
-func NewDatabase(c Config) Database {
+func NewDatabase(c Config) (Database, error) {
 	var err error
 
 	database := new(database)
 
 	database.db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", c.User, c.Password, c.IP, c.Name))
 	if err != nil {
-		log.Printf("db: %s", err.Error())
+		return nil, err
 	}
 
-	if connSuccess := database.db.Ping(); !connSuccess {
-		panic("Could not ping database")
-	}
-
-	return database
+	return database, nil
 }
 
 func (d *database) Sql() *sql.DB {
-	return d.db
+	return d.db.(*sql.DB)
 }
 
-// MustGetTransaction returns new database object with opened transaction.
+// MustBeginTransaction returns new database object with opened transaction.
 // Panics if transaction cannot be opened
 func (d *database) MustBeginTransaction() Database {
-	tx, err := d.db.Begin()
+	var db sqlDb
+	var tx sqlTx
 
-	if err != nil {
-		panic(err.Error())
+	db, ok := d.db.(sqlDb)
+	if ok {
+		tx = db.MustBegin()
+	} else {
+		panic(ErrCantStartTransaction)
 	}
 
 	return &database{
@@ -70,23 +98,22 @@ func (d *database) MustBeginTransaction() Database {
 
 // START2 OMIT
 func (d *database) Commit() error {
-	if tx, ok := d.db.(*sql.Tx); ok { // HL
+	if tx, ok := d.db.(sqlTx); ok { // HL
 		return tx.Commit()
-	} else {
-		return ErrInvalidTransaction
 	}
 
-	return nil
+	return ErrInvalidTransaction
 }
 
 // STOP2 OMIT
-
 func (d *database) Rollback() error {
-	if tx, ok := d.db.(*sql.Tx); ok { // HL
+	if tx, ok := d.db.(sqlTx); ok { // HL
 		return tx.Rollback()
-	} else {
-		return ErrInvalidTransaction
 	}
 
-	return nil
+	return ErrInvalidTransaction
+}
+
+func (d *database) PingDB() error {
+	return d.Sql().Ping()
 }
